@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zest — Food Delivery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- HEADER -->
+<header class="top-header" id="mainHeader">
+  <div class="header-inner">
+    <div class="logo" onclick="goHome()">Zest<em>.</em></div>
+    <div class="loc-btn" onclick="openSheet('locationSheet')">
+      <div>
+        <div class="city" id="hCity">📍 Connaught Place</div>
+        <div class="area" id="hArea">New Delhi, 110001 ▾</div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span style="color:var(--muted);font-size:16px">🔍</span>
+      <input type="text" id="globalSearch" placeholder="Search restaurants, dishes, cuisines…" oninput="handleSearch(this.value)">
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="goOrders()" id="ordersNavBtn">📦 Orders</button>
+      <button class="nav-btn" onclick="goProfile()" id="profileNavBtn">👤 <span id="navUserName">Sign In</span></button>
+      <button class="nav-btn accent" id="cartNavBtn" onclick="openCheckout()" style="display:none">
+        🛒 Cart <span class="nbadge" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME PAGE -->
+<div class="page active" id="homePage">
+  <div class="home-body">
+    <div class="hero-banner">
+      <div class="hero-content">
+        <div class="hero-tag">🔥 Exclusive Deals Today</div>
+        <h1>Delhi's Best Food,<br>At Your Doorstep</h1>
+        <p>Free delivery on your first 3 orders · 300+ restaurants</p>
+        <button class="hero-cta" onclick="document.getElementById('restSection').scrollIntoView({behavior:'smooth'})">
+          Order Now ↓
+        </button>
+      </div>
+      <div class="hero-img-wrap">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=700&q=80" alt="Delicious food">
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="stat-item"><div class="stat-num">300+</div><div class="stat-lbl">Restaurants</div></div>
+      <div class="stat-item"><div class="stat-num">28 min</div><div class="stat-lbl">Avg Delivery</div></div>
+      <div class="stat-item"><div class="stat-num">4.8★</div><div class="stat-lbl">Avg Rating</div></div>
+      <div class="stat-item"><div class="stat-num">1M+</div><div class="stat-lbl">Happy Orders</div></div>
+    </div>
+
+    <div class="sec-head"><h2>🎁 Today's Offers</h2></div>
+    <div class="offer-scroll" id="offerScroll"></div>
+
+    <div class="sec-head"><h2>🍽️ What's on your mind?</h2></div>
+    <div class="cats-row" id="catsRow"></div>
+
+    <div id="restSection">
+      <div class="sec-head">
+        <h2 id="restHeading">🏪 Restaurants Near You</h2>
+        <select id="sortSelect" style="border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer;background:white" onchange="sortRestaurants(this.value)">
+          <option value="">Sort</option>
+          <option value="rating">Top Rated</option>
+          <option value="time">Fastest</option>
+          <option value="price_low">Price: Low</option>
+          <option value="discount">Max Discount</option>
+        </select>
+      </div>
+      <div class="rest-grid" id="restGrid"></div>
+    </div>
+
+    <div class="testimonials-section">
+      <div class="sec-head"><h2>💬 What Our Customers Say</h2></div>
+      <div class="testimonials-grid">
+        <div class="tcard">
+          <div class="tcard-top">
+            <div class="tcard-avatar"><img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=120&q=80" alt="Anjali M." loading="lazy"></div>
+            <div><div class="tcard-name">Anjali M.</div><div class="tcard-stars">★★★★★</div></div>
+          </div>
+          <p class="tcard-text">Ordered from Spice Garden — arrived piping hot in under 30 mins! The butter chicken was absolutely divine. Will definitely order again.</p>
+          <div class="tcard-tag">🍗 Spice Garden</div>
+        </div>
+        <div class="tcard">
+          <div class="tcard-top">
+            <div class="tcard-avatar"><img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=120&q=80" alt="Rohit K." loading="lazy"></div>
+            <div><div class="tcard-name">Rohit K.</div><div class="tcard-stars">★★★★☆</div></div>
+          </div>
+          <p class="tcard-text">Pizza Palazzo makes the best thin-crust in Delhi. Tracking was smooth and the app is super easy to use. Packaging could be slightly better.</p>
+          <div class="tcard-tag">🍕 Pizza Palazzo</div>
+        </div>
+        <div class="tcard">
+          <div class="tcard-top">
+            <div class="tcard-avatar"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=120&q=80" alt="Nisha P." loading="lazy"></div>
+            <div><div class="tcard-name">Nisha P.</div><div class="tcard-stars">★★★★★</div></div>
+          </div>
+          <p class="tcard-text">Zen Bowl has the most authentic Japanese food I've had outside a restaurant. The real-time tracking is so reassuring — love it!</p>
+          <div class="tcard-tag">🍱 Zen Bowl</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESTAURANT PAGE -->
+<div class="page" id="restPage">
+  <div class="rest-page">
+    <div class="rest-hero" id="restHero">
+      <button class="rest-back" onclick="goHome()">←</button>
+      <div class="rest-hero-emoji" id="restHeroEmoji">🍕</div>
+      <div class="rest-hero-overlay"></div>
+      <div class="rest-hero-info">
+        <h1 id="restHeroName">Restaurant</h1>
+        <div class="rest-hero-meta" id="restHeroMeta"></div>
+      </div>
+    </div>
+    <div class="info-bar" id="restInfoBar"></div>
+    <div class="rest-layout">
+      <div class="menu-nav" id="menuNav"></div>
+      <div class="menu-content">
+        <div class="menu-search-wrap">
+          <span style="color:var(--muted)">🔍</span>
+          <input type="text" placeholder="Search in menu…" id="menuSearch" oninput="filterMenu(this.value)">
+        </div>
+        <div class="veg-filter">
+          <div class="toggle-switch" id="vegToggle" onclick="toggleVeg()"><div class="toggle-knob"></div></div>
+          <span class="veg-label">🟢 Pure Veg</span>
+        </div>
+        <div id="menuSections"></div>
+      </div>
+      <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-top">
+          <h3 id="cartRestName">Your Cart</h3>
+          <p id="cartRestSub">Items from this restaurant</p>
+        </div>
+        <div id="cartItems"></div>
+        <div id="cartBillSection" style="display:none">
+          <div class="promo-row">
+            <input type="text" id="promoCode" placeholder="Enter promo code">
+            <button class="promo-apply-btn" onclick="applyPromo()">Apply</button>
+          </div>
+          <p class="promo-ok" id="promoOk"></p>
+          <div class="cart-bill" id="cartBill"></div>
+          <button class="place-btn" id="placeOrderBtn" onclick="openCheckout()">Proceed to Checkout →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="float-cart" id="floatCart" onclick="openCheckout()">
+    <span>🛒 <span id="floatQty">0</span> items</span>
+    <span>|</span>
+    <span>₹<span id="floatTotal">0</span></span>
+    <span>→</span>
+  </div>
+</div>
+
+<!-- TRACKING PAGE -->
+<div class="page" id="trackPage">
+  <div class="track-page">
+    <div class="track-header">
+      <button onclick="goHome()" style="background:none;border:none;font-size:22px;cursor:pointer">←</button>
+      <h2>Order Tracking</h2>
+    </div>
+    <div class="map-container">
+      <div class="map-grid-bg"></div>
+      <div class="map-road"></div>
+      <div class="map-rest-pin">🏪</div>
+      <div class="map-rider">🛵</div>
+      <div class="map-home-pin">🏠</div>
+      <div class="map-eta-pill" id="mapEta">⏱ 24 mins away</div>
+    </div>
+    <div class="track-steps" id="trackStepsContainer"></div>
+    <div class="partner-card">
+      <div class="partner-avatar">🧑‍🍳</div>
+      <div class="partner-info">
+        <strong id="partnerName">Rahul Kumar</strong>
+        <span>Your delivery partner</span>
+        <div class="partner-rating">★ 4.8 <span style="color:var(--muted);font-weight:400;font-size:11px">(2.1k deliveries)</span></div>
+      </div>
+      <button class="call-btn" onclick="toast('📞 Calling Rahul…')">📞</button>
+    </div>
+    <div class="track-detail-card">
+      <h4>Order Summary</h4>
+      <div id="trackOrderSummary"></div>
+    </div>
+    <button onclick="goOrders()" style="width:100%;background:var(--text);color:white;border:none;border-radius:14px;padding:15px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px">View All Orders</button>
+  </div>
+</div>
+
+<!-- ORDERS PAGE -->
+<div class="page" id="ordersPage">
+  <div class="orders-page">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+      <button onclick="goHome()" style="background:none;border:none;font-size:22px;cursor:pointer">←</button>
+      <h2 style="margin:0;font-family:'Syne',sans-serif;font-size:24px;font-weight:900">My Orders</h2>
+    </div>
+    <div class="order-tabs">
+      <div class="otab active" onclick="switchOrderTab('all',this)">All</div>
+      <div class="otab" onclick="switchOrderTab('active',this)">Active</div>
+      <div class="otab" onclick="switchOrderTab('delivered',this)">Delivered</div>
+      <div class="otab" onclick="switchOrderTab('cancelled',this)">Cancelled</div>
+    </div>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="page" id="profilePage">
+  <div class="profile-page">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+      <button onclick="goHome()" style="background:none;border:none;font-size:22px;cursor:pointer">←</button>
+      <h2 style="margin:0;font-family:'Syne',sans-serif;font-size:24px;font-weight:900">My Profile</h2>
+    </div>
+    <div id="profileContent"></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div id="authContent"></div>
+  </div>
+</div>
+
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeModal('ratingModal')">✕</button>
+    <h2 style="margin-bottom:6px">Rate Your Order</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:0" id="ratingSubtitle">How was your experience?</p>
+    <div class="rate-stars" id="rateStars"></div>
+    <textarea class="rate-comment" id="rateComment" placeholder="Tell us more (optional)…"></textarea>
+    <button class="modal-submit" style="margin-top:12px" onclick="submitRating()">Submit Rating ⭐</button>
+  </div>
+</div>
+
+<!-- CHECKOUT SHEET -->
+<div class="sheet-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
+<div class="bottom-sheet" id="checkoutSheet">
+  <div class="sheet-handle-row"><div class="sheet-handle"></div></div>
+  <div class="sheet-title" id="checkoutTitle">Checkout</div>
+  <div class="checkout-steps" id="checkoutSteps">
+    <div class="cs-step active" data-step="1" onclick="goCheckoutStep(1)">1. Cart</div>
+    <div class="cs-step" data-step="2" onclick="goCheckoutStep(2)">2. Address</div>
+    <div class="cs-step" data-step="3" onclick="goCheckoutStep(3)">3. Payment</div>
+  </div>
+  <div class="checkout-content" id="checkoutBody"></div>
+</div>
+
+<!-- LOCATION SHEET -->
+<div class="sheet-overlay" id="locationOverlay" onclick="closeSheet('locationSheet','locationOverlay')"></div>
+<div class="bottom-sheet" id="locationSheet">
+  <div class="sheet-handle-row"><div class="sheet-handle"></div></div>
+  <div class="sheet-title">Choose Delivery Location</div>
+  <div style="padding:18px 26px">
+    <div class="menu-search-wrap" style="margin-bottom:18px">
+      <span>🔍</span>
+      <input type="text" placeholder="Search area, locality…" id="locSearch">
+    </div>
+    <div id="savedAddressList"><p style="font-size:13px;color:var(--muted);margin-bottom:8px">Sign in to see saved addresses</p></div>
+    <h4 style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px">Popular Areas</h4>
+    <div id="popularAreas"></div>
+    <button onclick="openAuth('signup')" style="width:100%;background:var(--accent);color:white;border:none;border-radius:14px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px" id="addAddrBtn">+ Add New Address</button>
+  </div>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
